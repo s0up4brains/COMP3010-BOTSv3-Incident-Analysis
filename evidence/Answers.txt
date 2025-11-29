@@ -1,0 +1,2 @@
+bstoll,btun,splunk_access,web_admin
+userIdentity.sessionContext.attributes.mfaAuthenticated
