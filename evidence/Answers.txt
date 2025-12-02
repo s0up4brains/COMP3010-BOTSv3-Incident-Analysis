@@ -2,3 +2,5 @@ bstoll,btun,splunk_access,web_admin
 userIdentity.sessionContext.attributes.mfaAuthenticated
 Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
 ab45689d-69cd-41e7-8705-5350402cf7ac
+bstoll
+frothlywebcode
