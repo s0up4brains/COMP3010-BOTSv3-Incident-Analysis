@@ -1,0 +1,16 @@
+1.index=botsv3 sourcetype="aws:cloudtrail" userIdentity.type=IAMUser
+| stats values(userIdentity.userName) as users
+
+2.index=botsv3 sourcetype="aws:cloudtrail" "userIdentity.sessionContext.attributes.mfaAuthenticated"="*"
+
+3. index=botsv3 sourcetype="aws:cloudtrail" sourcetype="hardware"
+
+4.index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
+
+5. index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
+
+6. index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
+
+7. index=botsv3 sourcetype="aws:s3accesslogs" frothlywebcode PUT txt
+
+8.
