@@ -8,11 +8,29 @@ Investigation and report on security incidents using the Boss of the SOC v3 (BOT
 
 ##### Introduction
 
+-SOC Context Overview
 
+-BOTSv3 Exercise
+
+-Investigation Objectives
+
+-Define Scope
+
+-Define Assumptions
 
 
 
 ##### SOC Roles
+
+SOC Tiers
+
+
+
+SOC Responsibilities
+
+
+
+
 
 SOC Analyst Method
 
@@ -32,11 +50,37 @@ SOC Analyst Method
 
 
 
+Incident handling methodology
+
+-prevention
+
+-detection
+
+-response
+
+-recovery
+
+
+
 
 
 ##### Installation \& Data Preparation
 
+
+
+Linux
+
+splunk installation
+
+dataset ingestion \& validation
+
 tools used
+
+
+
+Justify Decisions in context of SOC infrastructure
+
+Evidence
 
 
 
@@ -46,7 +90,7 @@ tools used
 
 TEMPLATE
 
--Detailed Wxplanation
+-Detailed Explanation with SOC Relevance
 
 -Question
 
@@ -55,6 +99,8 @@ TEMPLATE
 -Timestamp
 
 -Screenshot
+
+-Dashboards
 
 -Answer
 
@@ -100,7 +146,43 @@ Answer: bstoll,btun,splunk\_access,web\_admin
 
 
 
+TIMESTAMP HERE user 'bstoll' (Bud) logged in with Multi Factor Authenication
+
+
+
+TIMESTAMP HERE S3 Bucket 'frothlywebcode' was made publicly accessible using (COMMAND HERE)
+
+
+
+TIMESTAMP HERE Text file 'OPEN\_BUCKET\_PLEAE\_FIX.txt' was uploaded to the open bucket
+
+
+
+TIMESTAMP HERE S3 Bucket 'frothlywebcode' was made private again
+
+
+
 
 
 ##### Conclusion
+
+
+
+Findings
+
+Key Lessons
+
+SOC strategy implications
+
+Improvements to be made to detection and response
+
+
+
+References (IEEE style)
+
+
+
+
+
+
 
