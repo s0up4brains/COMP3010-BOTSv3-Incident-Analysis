@@ -146,7 +146,7 @@ Answer: bstoll,btun,splunk\_access,web\_admin
 
 
 
-TIMESTAMP HERE user 'bstoll' (Bud) logged in with Multi Factor Authenication
+TIMESTAMP HERE user 'bstoll' (Bud) logged in without Multi Factor Authenication
 
 
 
@@ -159,6 +159,10 @@ TIMESTAMP HERE Text file 'OPEN\_BUCKET\_PLEAE\_FIX.txt' was uploaded to the open
 
 
 TIMESTAMP HERE S3 Bucket 'frothlywebcode' was made private again
+
+
+
+8/20/18 2:04:02:640 PM 'aws:cloudwatch:guardduty' caught extrernal known malicious IP probing an Open Port (SSH port 22 on an EC2 Instance i-0cc93bade2b3cba63 was reachable). Origninating from IP: 122.122.243.11 , Location: Beijing, China , ISP: China Telecom , Threat list: Proofpoint
 
 
 
@@ -179,10 +183,4 @@ Improvements to be made to detection and response
 
 
 References (IEEE style)
-
-
-
-
-
-
 
