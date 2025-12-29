@@ -50,33 +50,7 @@ In BOTSv3, the investigation primarily reflects Tier 1 and Tier 2 SOC activities
 
 
 
-Core responsibilities of an SOC include
-
-
-
-
-
-
-
-
-
-SOC Analyst Method
-
-\*One small paragraph here about investigation workflow\*
-
--Security Alert
-
--Supporting Evidence
-
--Analysis
-
--Conclusion
-
--Next Steps
-
-
-
-##### Incident Handling Reflection
+##### SOC Incident Handling Methodology
 
 
 
