@@ -24,8 +24,6 @@ The objectives of this investigation are primarily to answer the AWS and endpoin
 
 The following assumptions have been made regarding the components of the investigation:
 
-
-
 * The logs are accurate, complete and trustworthy
 * Timestamps are properly formatted and accurate
 * The dataset contains evidence of malicious activity
@@ -54,17 +52,18 @@ In BOTSv3, the investigation primarily reflects Tier 1 and Tier 2 SOC activities
 
 
 
-Incident handling methodology
-
--prevention
-
--detection
-
--response
-
--recovery
+Security Operations Centres have plans in place for handling incidents, analysts from each tier are trained for they are expected to operate per the company plan. Precise methods for incident handling may vary between SOC's. However, SOC's generally follow the same key points of preventative measures, detecting threats, responding to threats and recovering from the resulting damage. The key tasks of incident handling methodology include:
 
 
+
+* prevention
+* detection
+* response
+* recovery
+
+
+
+The CREST Cyber Security Incident Response Guide details a structured framework for response and recovery; the guide mirrors the approach used in SOC investigations such as the BOTSv3 exercise. While BOTSv3 reflects a structured SOC incident - in line with the cyber kill chain - SOC's can face additional challenges. Further challenges involve real-world issues such as pursuing legal action and coordination with cloud and network engineers. These issues are outside the scope of the fictious BOTSv3 dataset.
 
 
 
@@ -72,13 +71,15 @@ Incident handling methodology
 
 
 
-Linux
+Since the dataset potentially contains malware; it was important to investigate the BOTSv3 dataset in a virtual environment. Splunk Enterprise was installed on an Ubuntu 24.04 virtual machine, replicating a typical SOC analysis environment. Provided with the BOTSv3 dataset were deployment instructions which were followed. Then, the dataset was validated by checking the 'index=botsv3 earliest=0' index search query. This returned a series of event logs relating to the BOTSv3 dataset, ready for investigation with Splunk's Search Processing Language (SPL).
 
-splunk installation
+The AWS CloudTrail documentation was a useful tool in understanding the logs and filtering through logs.
 
-dataset ingestion \& validation
+
 
 tools used
+
+
 
 Justify Decisions in context of SOC infrastructure
 
@@ -86,7 +87,15 @@ Evidence
 
 
 
+At the midpoint of the investigation, I travelled away from the Computer with the Linux and Splunk installation. Operating from my laptop during the winter holidays meant setting up a new Ubuntu Virtual Machine, installing Splunk again and re-ingesting the BOTSv3 dataset.
+
+
+
 ##### AWS endpoint events
+
+
+
+The following section answers the provided 200-level questions relating to AWS and endpoint. Each subsection provides an explanation of the investigation, the query or chain of queries which uncovered the answer, the timestamp of the relevant log, a screenshot as evidence, any dashboards used to compile data results, the relevant answer and - if applicable- any threat intel lookup.
 
 
 
@@ -114,23 +123,45 @@ TEMPLATE
 
 Question 1. IAM users that accessed an AWS service
 
--Detailed Explanation
+Query: index=botsv3 sourcetype="aws:cloudtrail" userIdentity.type=IAMUser | stats values(userIdentity.userName) as users
 
+This query analyses AWS cloudtrail logs to identify IAM users who accessed AWS services. CloudTrail logs record all AWS API activity. Filtering for IAM users helps to identify unauthorised access, compromised credentials and misuse of accounts with enabled privileges. The query returns a list of all IAM user values
 
-
-Query: index=botsv3 sourcetype="aws:cloudtrail" userIdentity.type=IAMUser
-
-| stats values(userIdentity.userName) as users
-
--Timestamp
-
--Screenshot
+!\[Question 1 Query Evidence](evidence/Q1/betterQueryString.png)
 
 Answer: bstoll,btun,splunk\_access,web\_admin
 
--Threat Intel Lookup
+!\[Question 1 Answer Evidence](evidence/Q1/Usernme.png)
 
 
+
+
+
+Question 2. What field would you use to alert that AWS API activity has occurred without MFA (multi-factor authentication)?
+
+
+
+Question 3. What is the processor number used on the web servers?
+
+
+
+Question 4. Bud accidentally makes an S3 bucket publicly accessible. What is the event ID of the API call that enabled public access? Answer guidance: Include any special characters/punctuation.
+
+
+
+Question 5. What is Bud's username?
+
+
+
+Question 6. What is the name of the S3 bucket that was made publicly accessible?
+
+
+
+Question 7. What is the name of the text file that was successfully uploaded into the S3 bucket while it was publicly accessible?
+
+
+
+Question 8. What is the FQDN of the endpoint that is running a different Windows operating system edition than the others?
 
 
 
@@ -182,6 +213,8 @@ SOC strategy implications
 
 Improvements to be made to detection and response
 
+MFA, alerting, s3 control improvements, give employees access to only necessary features
+
 
 
 References (IEEE style)
@@ -227,6 +260,4 @@ NIST incident response lifecycle
 
 
 Crest cybersecurity incident response guide
-
-
 
