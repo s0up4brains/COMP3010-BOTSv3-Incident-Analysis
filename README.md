@@ -127,11 +127,11 @@ Query: index=botsv3 sourcetype="aws:cloudtrail" userIdentity.type=IAMUser | stat
 
 This query analyses AWS cloudtrail logs to identify IAM users who accessed AWS services. CloudTrail logs record all AWS API activity. Filtering for IAM users helps to identify unauthorised access, compromised credentials and misuse of accounts with enabled privileges. The query returns a list of all IAM user values
 
-!\[Question 1 Query Evidence](evidence/Q1/betterQueryString.png)
+!\[Question 1 Query Evidence](/evidence/Q1/betterQueryString.png)
 
 Answer: bstoll,btun,splunk\_access,web\_admin
 
-!\[Question 1 Answer Evidence](evidence/Q1/Usernme.png)
+!\[Question 1 Answer Evidence](/evidence/Q1/Usernme.png)
 
 
 
