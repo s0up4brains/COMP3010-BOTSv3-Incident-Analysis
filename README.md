@@ -4,9 +4,7 @@ Investigation and report on security incidents using the Boss of the SOC v3 (BOT
 
 
 
-
-
-##### Introduction
+#### Introduction
 
 
 
@@ -30,7 +28,7 @@ The following assumptions have been made regarding the components of the investi
 
 
 
-##### SOC Roles
+### SOC Roles
 
 
 
@@ -48,7 +46,7 @@ In BOTSv3, the investigation primarily reflects Tier 1 and Tier 2 SOC activities
 
 
 
-##### SOC Incident Handling Methodology
+### SOC Incident Handling Methodology
 
 
 
@@ -56,10 +54,10 @@ Security Operations Centres have plans in place for handling incidents, analysts
 
 
 
-* prevention
-* detection
-* response
-* recovery
+* Prevention
+* Detection
+* Response
+* Recovery
 
 
 
@@ -67,7 +65,7 @@ The CREST Cyber Security Incident Response Guide details a structured framework 
 
 
 
-##### Installation \& Data Preparation
+### Installation \& Data Preparation
 
 
 
@@ -75,49 +73,19 @@ Since the dataset potentially contains malware; it was important to investigate 
 
 The AWS CloudTrail documentation was a useful tool in understanding the logs and filtering through logs.
 
-
-
-tools used
-
-
-
-Justify Decisions in context of SOC infrastructure
-
-Evidence
-
-
-
 At the midpoint of the investigation, I travelled away from the Computer with the Linux and Splunk installation. Operating from my laptop during the winter holidays meant setting up a new Ubuntu Virtual Machine, installing Splunk again and re-ingesting the BOTSv3 dataset.
 
 
 
-##### AWS endpoint events
+\*\*Evidence\*\*
 
 
 
-The following section answers the provided 200-level questions relating to AWS and endpoint. Each subsection provides an explanation of the investigation, the query or chain of queries which uncovered the answer, the timestamp of the relevant log, a screenshot as evidence, any dashboards used to compile data results, the relevant answer and - if applicable- any threat intel lookup.
+### AWS endpoint events
 
 
 
-TEMPLATE
-
--Detailed Explanation with SOC Relevance
-
--Question
-
--Query
-
--Timestamp
-
--Screenshot
-
--Dashboards
-
--Answer
-
--Threat Intel Lookup
-
-
+The following section answers the provided 200-level questions relating to AWS and endpoint. Each subsection provides an explanation of the investigation, the query or chain of queries which uncovered the answer, the timestamp of the relevant log, a screenshot as evidence, any dashboards used to compile data results, the relevant answer and - if applicable - any threat intel lookup.
 
 
 
@@ -125,69 +93,143 @@ Question 1. IAM users that accessed an AWS service
 
 Query: index=botsv3 sourcetype="aws:cloudtrail" userIdentity.type=IAMUser | stats values(userIdentity.userName) as users
 
-This query analyses AWS cloudtrail logs to identify IAM users who accessed AWS services. CloudTrail logs record all AWS API activity. Filtering for IAM users helps to identify unauthorised access, compromised credentials and misuse of accounts with enabled privileges. The query returns a list of all IAM user values
+This query analyses AWS cloudtrail logs to identify IAM users who accessed AWS services. CloudTrail logs record all AWS API activity. Filtering for IAM users helps to identify unauthorised access, compromised credentials and misuse of privileged accounts. The query returns a list of all IAM user values.
 
-!\[Question 1 Query Evidence](/evidence/Q1/betterQueryString.png)
+The identified IAM users include both human and non-human accounts. Accounts 'bstoll' and 'btun' represent human accounts generating AWS activity. The other two accounts are 'web\_admin', a privileged admin account and 'splunk\_access', a generic IAM user that allows AWS logs to be integrated into Splunk. Differentiating between human, admin and service accounts aids SOC investigations as it gives more accurate understanding of access patterns and highlight suspicious activity.
+
+Query Evidence: (/evidence/Q1/betterQueryString.png)
 
 Answer: bstoll,btun,splunk\_access,web\_admin
 
-!\[Question 1 Answer Evidence](/evidence/Q1/Usernme.png)
-
-
+Answer Evidence: (/evidence/Q1/Usernme.png)
 
 
 
 Question 2. What field would you use to alert that AWS API activity has occurred without MFA (multi-factor authentication)?
 
+Query: index=botsv3 sourcetype="aws:cloudtrail" "userIdentity.sessionContext.attributes.mfaAuthenticated"="\*"
+
+The mfaAuthenticated search query can be found as a suggested filter when using SPL to filter under the tag 'userIdentity'. This field allows SOC analysts to alert on AWS activity performed without a multi-factor authentication check - a common indicator of misuse or poor security. 
+
+Query Evidence: (/evidence/Q2/searchstring.png)
+
+MFA false Evidence: (/evidence/Q2/JSONValue.png)
+
+Answer: userIdentity.sessionContext.attributes.mfaAuthenticated
+
 
 
 Question 3. What is the processor number used on the web servers?
+
+Query: index=botsv3 sourcetype="hardware"
+
+Identifying the web server can help to correlate infrastructure details with malicious activity and assess impact.
+
+Timestamp: 8/20/18 2:26:25.000 PM
+
+Query and Answer Evidence: (/evidence/Q3/Processor.png)
+
+Answer: Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
 
 
 
 Question 4. Bud accidentally makes an S3 bucket publicly accessible. What is the event ID of the API call that enabled public access? Answer guidance: Include any special characters/punctuation.
 
+Query: index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
+
+This is a major event in the incident timeline, from investigation, the event was accidental but it allowed malicious activity to occur further in the timeline.
+
+Timestamp: 8/20/18 1:01:46.000 PM
+
+Answer: ab45689d-69cd-41e7-8705-5350402cf7ac
+
+Event ID evidence: (/evidence/Q4/eventide.png)
+
+Public access enabled evidence: (/evidence/Q4/AllUsersReadWrite.png)
+
 
 
 Question 5. What is Bud's username?
+
+Query: index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
+
+Buds username can be found attatched to the API activity that enabled public access to the S3 Bucket. Now that Bud's username has been uncovered and linked to misuse, we can use this username to further investigate the incident timeline.
+
+Timestamp: 8/20/18 1:01:46.000 PM
+
+Answer: bstoll
+
+Answer Evidence: (/evidence/Q5/BudsUsername.png)
 
 
 
 Question 6. What is the name of the S3 bucket that was made publicly accessible?
 
+Query: index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
+
+The name of the S3 bucket is found in the same log as Questions 4 and 5. 
+
+Timestamp: 8/20/18 1:01:46.000 PM
+
+Answer: frothlywebcode
+
+Answer Evidence: (/evidence/Q6/BucketName.png)
+
 
 
 Question 7. What is the name of the text file that was successfully uploaded into the S3 bucket while it was publicly accessible?
+
+Query: index=botsv3 sourcetype="aws:s3accesslogs" frothlywebcode PUT txt
+
+Timestamp: 8/20/18 1:02:44.000 PM
+
+Query and Answer Evidence: (/evidence/Q7/txtFile.png)
+
+Answer: OPEN\_BUCKET\_PLEAE\_FIX.txt
 
 
 
 Question 8. What is the FQDN of the endpoint that is running a different Windows operating system edition than the others?
 
+Query 1: index=botsv3 sourcetype="winhostmon" OS="\*"
+
+Query 2: index=botsv3 host="bstoll-l" sourcetype="WinEventLog:Security"
+
+Query evidence: (evidence/Q8/InitialSearch.png)
+
+Different OS evidence: (/evidence/Q8/DifferentOS.png)  
+
+Answer: BSTOLL-L.froth.ly
+
+Answer evidence: (evidence/Q8/FQDN.png)
 
 
 
-
-###### (IOC) Indicators of Compromise
-
-###### 
-
-###### Detection Methodology
+### (IOC) Indicators of Compromise
 
 
 
-###### Chronology of Events
+### Detection Methodology
 
 
 
-TIMESTAMP HERE user 'bstoll' (Bud) logged in without Multi Factor Authenication
+### Chronology of Events
 
 
 
-TIMESTAMP HERE S3 Bucket 'frothlywebcode' was made publicly accessible using (COMMAND HERE)
+8/20/18 9:35:53.000 AM: user 'bstoll' (Bud) first instance of activity without Multi Factor Authentication
 
 
 
-TIMESTAMP HERE Text file 'OPEN\_BUCKET\_PLEAE\_FIX.txt' was uploaded to the open bucket
+8/20/18 1:01:46.000 PM: S3 Bucket 'frothlywebcode' was made publicly accessible using (COMMAND HERE)
+
+
+
+8/20/18 1:02:44.000 PM: Text file 'OPEN\_BUCKET\_PLEAE\_FIX.txt' was uploaded to the open bucket
+
+
+
+8/20/18 2:04:02:640 PM 'aws:cloudwatch:guardduty' caught external known malicious IP probing an Open Port (SSH port 22 on an EC2 Instance i-0cc93bade2b3cba63 was reachable). Originating from IP: 122.122.243.11 , Location: Beijing, China , ISP: China Telecom , Threat list: Proofpoint
 
 
 
@@ -195,13 +237,7 @@ TIMESTAMP HERE S3 Bucket 'frothlywebcode' was made private again
 
 
 
-8/20/18 2:04:02:640 PM 'aws:cloudwatch:guardduty' caught extrernal known malicious IP probing an Open Port (SSH port 22 on an EC2 Instance i-0cc93bade2b3cba63 was reachable). Origninating from IP: 122.122.243.11 , Location: Beijing, China , ISP: China Telecom , Threat list: Proofpoint
-
-
-
-
-
-##### Conclusion
+### Conclusion
 
 
 
@@ -217,7 +253,7 @@ MFA, alerting, s3 control improvements, give employees access to only necessary 
 
 
 
-References (IEEE style)
+#### References (IEEE style)
 
 
 
@@ -227,13 +263,9 @@ https://www.splunk.com/en\_us/download/splunk-enterprise.html?utm\_campaign=goog
 
 
 
-
-
 UBUNTU LINUX 24.04.3 (VM ISO USED)
 
 https://ubuntu.com/download/desktop
-
-
 
 
 
