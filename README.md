@@ -4,7 +4,7 @@ Investigation and report on security incidents using the Boss of the SOC v3 (BOT
 
 
 
-#### Introduction
+## Introduction
 
 
 
@@ -30,7 +30,7 @@ The following assumptions have been made regarding the components of the investi
 
 
 
-#### SOC Roles
+## SOC Roles
 
 
 
@@ -48,7 +48,7 @@ In BOTSv3, the investigation primarily reflects Tier 1 and Tier 2 SOC activities
 
 
 
-#### SOC Incident Handling Methodology
+## SOC Incident Handling Methodology
 
 
 
@@ -67,7 +67,7 @@ The CREST Cyber Security Incident Response Guide details a structured framework 
 
 
 
-#### Installation \& Data Preparation
+## Installation \& Data Preparation
 
 
 
@@ -79,7 +79,7 @@ At the midpoint of the investigation, I travelled away from the Computer with th
 
 
 
-#### AWS endpoint events
+## AWS endpoint events
 
 
 
@@ -87,18 +87,15 @@ The following section answers the provided 200-level questions relating to AWS a
 
 
 
-Question 1. IAM users that accessed an AWS service
+### Question 1. IAM users that accessed an AWS service
 
 Query: index=botsv3 sourcetype="aws:cloudtrail" userIdentity.type=IAMUser | stats values(userIdentity.userName) as users
-
 This query analyses AWS CloudTrail logs to identify IAM users who accessed AWS services. CloudTrail logs record all AWS API activity. Filtering for IAM users helps to identify unauthorised access, compromised credentials and misuse of privileged accounts. The query returns a list of all IAM user values.
-
 The identified IAM users include both human and non-human accounts. Accounts 'bstoll' and 'btun' represent human accounts generating AWS activity. The other two accounts are 'web\_admin', a privileged admin account and 'splunk\_access', a generic IAM user that allows AWS logs to be integrated into Splunk. Differentiating between human, admin and service accounts aids SOC investigations as it gives more accurate understanding of access patterns and highlight suspicious activity.
+Answer: bstoll,btun,splunk\_access,web\_admin
 
 Query Evidence: (/evidence/Q1/betterQueryString.png)
 <img width="1917" height="1078" alt="betterQueryString" src="https://github.com/user-attachments/assets/1ef0dad1-dcd6-47ba-90ce-a71932e3f904" />
-
-Answer: bstoll,btun,splunk\_access,web\_admin
 
 Answer Evidence: (/evidence/Q1/Usernme.png)
 <img width="1912" height="1077" alt="Usernme" src="https://github.com/user-attachments/assets/7367040a-3979-431e-9394-b4ef18cf4454" />
@@ -106,11 +103,11 @@ Answer Evidence: (/evidence/Q1/Usernme.png)
 
 
 
-Question 2. What field would you use to alert that AWS API activity has occurred without MFA (multi-factor authentication)?
+### Question 2. What field would you use to alert that AWS API activity has occurred without MFA (multi-factor authentication)?
 
 Query: index=botsv3 sourcetype="aws:cloudtrail" "userIdentity.sessionContext.attributes.mfaAuthenticated"="\*"
-
 The mfaAuthenticated search query can be found as a suggested filter when using SPL to filter under the tag 'userIdentity'. This field allows SOC analysts to alert on AWS activity performed without a multi-factor authentication check - a common indicator of misuse or poor security.
+Answer: userIdentity.sessionContext.attributes.mfaAuthenticated
 
 Query Evidence: (/evidence/Q2/searchstring.png)
 <img width="1911" height="1073" alt="searchString" src="https://github.com/user-attachments/assets/37cc38b7-18e7-468b-9441-1fb6fd2afde5" />
@@ -118,33 +115,26 @@ Query Evidence: (/evidence/Q2/searchstring.png)
 MFA false Evidence: (/evidence/Q2/JSONValue.png)
 <img width="1918" height="1072" alt="JSONvalue" src="https://github.com/user-attachments/assets/251ffe71-71c5-4626-aad5-5b1e7a96889f" />
 
-Answer: userIdentity.sessionContext.attributes.mfaAuthenticated
 
 
-
-Question 3. What is the processor number used on the web servers?
+### Question 3. What is the processor number used on the web servers?
 
 Query: index=botsv3 sourcetype="hardware"
-
 Identifying the web server can help to correlate infrastructure details with malicious activity and assess impact.
-
 Timestamp: 8/20/18 2:26:25.000 PM
+Answer: Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
 
 Query and Answer Evidence: (/evidence/Q3/Processor.png)
 <img width="1918" height="1078" alt="Processor" src="https://github.com/user-attachments/assets/df512100-62db-4319-b8b6-8b18c0783a9c" />
 
-Answer: Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
 
 
 
-Question 4. Bud accidentally makes an S3 bucket publicly accessible. What is the event ID of the API call that enabled public access? Answer guidance: Include any special characters/punctuation.
+### Question 4. Bud accidentally makes an S3 bucket publicly accessible. What is the event ID of the API call that enabled public access? Answer guidance: Include any special characters/punctuation.
 
 Query: index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
-
-This is a major event in the incident timeline, from investigation, the event was accidental, but it allowed malicious activity to occur further in the timeline.
-
+This is a major event in the incident timeline, from investigation, the event was accidental, but it allowed malicious activity to occur further in the timeline. In an SOC, monitoring 'PutBucketAcl' events is improtant as they indicate changes that could have compromised a system, leading to data exposure. Altering on this activity allows early detection and increases response times, minimising the amount of time that data is exposed.
 Timestamp: 8/20/18 1:01:46.000 PM
-
 Answer: ab45689d-69cd-41e7-8705-5350402cf7ac
 
 Event ID evidence: (/evidence/Q4/eventid.png)
@@ -155,14 +145,11 @@ Public access enabled evidence: (/evidence/Q4/AllUsersReadWrite.png)
 
 
 
-Question 5. What is Bud's username?
+### Question 5. What is Bud's username?
 
 Query: index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
-
 Bud’s username can be found attatched to the API activity that enabled public access to the S3 Bucket. Now that Bud's username has been uncovered and linked to misuse, we can use this username to further investigate the incident timeline.
-
 Timestamp: 8/20/18 1:01:46.000 PM
-
 Answer: bstoll
 
 Answer Evidence: (/evidence/Q5/BudsUsername.png)
@@ -170,14 +157,11 @@ Answer Evidence: (/evidence/Q5/BudsUsername.png)
 
 
 
-Question 6. What is the name of the S3 bucket that was made publicly accessible?
+### Question 6. What is the name of the S3 bucket that was made publicly accessible?
 
 Query: index=botsv3 sourcetype="aws:cloudtrail" eventName="PutBucketAcl"
-
-The name of the S3 bucket is found in the same log as Questions 4 and 5.
-
+The name of the S3 bucket is found in the same log as Questions 4 and 5. As part of SOC recovery procedures this bucket should be investigated for compormised files or malware.
 Timestamp: 8/20/18 1:01:46.000 PM
-
 Answer: frothlywebcode
 
 Answer Evidence: (/evidence/Q6/BucketName.png)
@@ -185,24 +169,24 @@ Answer Evidence: (/evidence/Q6/BucketName.png)
 
 
 
-Question 7. What is the name of the text file that was successfully uploaded into the S3 bucket while it was publicly accessible?
+### Question 7. What is the name of the text file that was successfully uploaded into the S3 bucket while it was publicly accessible?
 
 Query: index=botsv3 sourcetype="aws:s3accesslogs" frothlywebcode PUT txt
-
+Interacting with potentially malicous files is out of the scopeof my investigation. However, the existence of this activity is evidence that malware may have compromised the S3 Bucket.
 Timestamp: 8/20/18 1:02:44.000 PM
+Answer: OPEN\_BUCKET\_PLEAE\_FIX.txt
 
 Query and Answer Evidence: (/evidence/Q7/txtFile.png)
 <img width="1918" height="1078" alt="txtFile" src="https://github.com/user-attachments/assets/d3abca82-d36c-4292-9993-b13ea816f362" />
 
-Answer: OPEN\_BUCKET\_PLEAE\_FIX.txt
 
 
-
-Question 8. What is the FQDN of the endpoint that is running a different Windows operating system edition than the others?
+### Question 8. What is the FQDN of the endpoint that is running a different Windows operating system edition than the others?
 
 Query 1: index=botsv3 sourcetype="winhostmon" OS="\*"
-
 Query 2: index=botsv3 host="bstoll-l" sourcetype="WinEventLog:Security"
+Identifying a different OS from the rest of Frothlys infrastructure may be casuse for concern because different Operating Systems use different security rules and configurations. In this case, the FQDN of the endpoint running a different is attatched to the same user that caused thre misconfiguration of the S3 Bucket. This could suggest that the two are linked
+Answer: BSTOLL-L.froth.ly
 
 Query evidence: (evidence/Q8/InitialSearch.png)
 <img width="1908" height="1078" alt="InitialSearch" src="https://github.com/user-attachments/assets/b5efed0f-fdbc-49e4-93e4-8143e1a4ec0c" />
@@ -210,14 +194,12 @@ Query evidence: (evidence/Q8/InitialSearch.png)
 Different OS evidence: (/evidence/Q8/DifferentOS.png)
 <img width="1918" height="1078" alt="DifferentOS" src="https://github.com/user-attachments/assets/9d4e0f42-e5ac-419b-bf39-7773ecc36d3c" />
 
-Answer: BSTOLL-L.froth.ly
-
 Answer evidence: (evidence/Q8/FQDN.png)
 <img width="1918" height="1078" alt="FQDN " src="https://github.com/user-attachments/assets/0c4bb550-f7ed-4dc5-9c47-cb77a837fa29" />
 
 
 
-#### (IOC) Indicators of Compromise
+## (IOC) Indicators of Compromise
 
 
 
@@ -229,7 +211,7 @@ Answer evidence: (evidence/Q8/FQDN.png)
 
 
 
-#### Detection Methodology
+## Detection Methodology
 
 
 
@@ -237,7 +219,7 @@ Detection relied on CloudTrail monitoring, GuardDuty threat intelligence and log
 
 
 
-#### Chronology of Events
+## Chronology of Events
 
 
 
@@ -249,7 +231,7 @@ Detection relied on CloudTrail monitoring, GuardDuty threat intelligence and log
 
 
 
-#### Conclusion
+## Conclusion
 
 
 
@@ -261,27 +243,27 @@ The incident demonstrated that Forthlys' preventative measures are insufficient.
 
 
 
-My recommednations are informed by SOC incident handling methodologies of Prevention, Detection, Response and Recovery. The simplest improvement to Frothly's infrastructure is enhancing detection. Creating a dashboard with alerts for high-risk API activity, such as AWS activity that occurs without Multi-Factor Authentication and 'PutBucketAcl' actions. These alerts can lead to earlier detection of potentially malicious activity, reducing response times. Multi-Factor Authentication should be enforced for all existing users, and it should be a requirement that all new users enable MFA.
+My recommednations are informed by SOC incident handling methodologies of Prevention, Detection, Response and Recovery. The simplest improvement to Frothly's infrastructure is enhancing detection. Creating a dashboard with alerts for high-risk API activity, such as AWS activity that occurs without Multi-Factor Authentication and 'PutBucketAcl' actions. These alerts can lead to earlier detection of potentially malicious activity, reducing response times. Multi-Factor Authentication should be enforced for all existing users, and it should be a requirement that all new users enable MFA. In addition, all sytems should be updated to run the same operating system, using a uniform security setup.
 
 
 
 The next steps following the incident involve reviewing the contents of the bucket and other potentially compromised or recently changed systems for malicious content. Removing any threats from the system. Once compromised content has been eradicated, systems should be restored and tested so that operations may continue. Preventative measures include limiting employee access to a least privilege principle policy, which would reduce the risk of accidental exposure due to human error and prevent future incidents similar to the S3 bucket exposure. Employees with AWS access privileges should also be retrained on security principles and policies. In addition, employees should know how to respond in the event of an incident. Ensuring staff stay vigilant is the most effective way to mitigate risks and reduce threat impact.
 
-#### Appendix
+## Appendix
 
-Additional Evidence
+### Additional Evidence
 
 GuardDuty Probingt evidence: (evidence/AdditionalFindings/guardduty probing event.png)
 <img width="1918" height="1078" alt="guardduty probing event" src="https://github.com/user-attachments/assets/32f576cb-9c46-4413-bbd1-11c77b81165d" />
 
-Investigation Video
+### Investigation Video
 
 
-AI Declaration
+### AI Declaration
 
-AI interrogation
+### AI interrogation
 
-#### References (IEEE style)
+### References (IEEE style)
 
 
 
