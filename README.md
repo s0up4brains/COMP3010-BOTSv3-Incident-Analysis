@@ -267,7 +267,19 @@ My suggestions are informed by SOC incident handling methodologies of Prevention
 
 The next steps following the incident involve reviewing the contents of the bucket and other potentially compromised or recently changed systems for malicious content. Removing any threats from the system. Once compromised content has been eradicated, systems should be restored and tested so that operations may continue. Preventative measures include limiting employee access to a least privilege principle policy, which would reduce the risk of accidental exposure due to human error and prevent future incidents similar to the S3 bucket exposure. Employees with AWS access privileges should also be retrained on security principles and policies. In addition, employees should know how to respond in the event of an incident. Ensuring staff stay vigilant is the most effective way to mitigate risks and reduce threat impact.
 
+#### Appendix
 
+Additional Evidence
+
+GuardDuty Probingt evidence: (evidence/AdditionalFindings/guardduty probing event.png)
+<img width="1918" height="1078" alt="guardduty probing event" src="https://github.com/user-attachments/assets/32f576cb-9c46-4413-bbd1-11c77b81165d" />
+
+Investigation Video
+
+
+AI Declaration
+
+AI interrogation
 
 #### References (IEEE style)
 
