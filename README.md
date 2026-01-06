@@ -259,17 +259,7 @@ GuardDuty Probingt evidence: (evidence/AdditionalFindings/guardduty probing even
 ### Investigation Video
 
 
-### AI Declaration
-
-### AI interrogation
-
 ### References (IEEE style)
-
-
-
-
-
-
 
 [1] IBM, “What is a Security Operations Center (SOC)?,” IBM Security, [Online]. Available: https://www.ibm.com/think/topics/security-operations-center. [Accessed: 6-Jan-2026].
 
