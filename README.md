@@ -253,15 +253,15 @@ Detection relied on CloudTrail monitoring, GuardDuty threat intelligence and log
 
 
 
-The investigation outlined a security incident involving an Amazon S3 bucket that was publicly accessible for over an hour, exposing internal assets. The incident was a result of a misconfiguration by a legitimate IAM user. During the exposure, a .txt file was successfully uploaded to the bucket, and AWS GuardDuty detected a malicious IP address probing an exposed EC2 instance. This demonstrates evidence of increased attention from external sources as a result of the misconfiguration. While no evidence of deeper compromise was detected in the scope of this investigation, the incident highlights how configuration errors can increase the risk of attack.
+The investigation outlined a security incident involving an Amazon S3 bucket that was publicly accessible for over an hour, exposing internal assets. The incident was a result of a misconfiguration by a legitimate IAM user. During the exposure, a .txt file was successfully uploaded to the bucket, and AWS GuardDuty detected a malicious IP address probing an exposed EC2 instance. This is evidence of increased attention from external sources as a result of the misconfiguration. While no evidence of deeper compromise was detected in the scope of this investigation, the incident highlights how configuration errors can increase the risk of attack.
 
 
 
-The incident demonstrated that Forthlys' preventative measures are insufficient. Appropriate measures have not been implemented to reduce human error. The lack of enforced multi-factor authentication and privilege controls increased the likelihood of accidental exposure.
+The incident demonstrated that Forthlys' preventative measures are insufficient. Appropriate measures have not been implemented to reduce human error. The lack of enforced multi-factor authentication and privilege controls increased the likelihood of accidental exposure. 
 
 
 
-My suggestions are informed by SOC incident handling methodologies of Prevention, Detection, Response and Recovery. The simplest improvement to Frothly's infrastructure is enhancing detection. Creating a dashboard with alerts for high-risk API activity, such as AWS activity that occurs without Multi-Factor Authentication and 'PutBucketAcl' actions. These alerts can lead to earlier detection of potentially malicious activity, reducing response times. Multi-Factor Authentication should be enforced for all existing users, and it should be a requirement that all new users enable MFA.
+My recommednations are informed by SOC incident handling methodologies of Prevention, Detection, Response and Recovery. The simplest improvement to Frothly's infrastructure is enhancing detection. Creating a dashboard with alerts for high-risk API activity, such as AWS activity that occurs without Multi-Factor Authentication and 'PutBucketAcl' actions. These alerts can lead to earlier detection of potentially malicious activity, reducing response times. Multi-Factor Authentication should be enforced for all existing users, and it should be a requirement that all new users enable MFA.
 
 
 
