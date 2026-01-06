@@ -96,10 +96,13 @@ This query analyses AWS CloudTrail logs to identify IAM users who accessed AWS s
 The identified IAM users include both human and non-human accounts. Accounts 'bstoll' and 'btun' represent human accounts generating AWS activity. The other two accounts are 'web\_admin', a privileged admin account and 'splunk\_access', a generic IAM user that allows AWS logs to be integrated into Splunk. Differentiating between human, admin and service accounts aids SOC investigations as it gives more accurate understanding of access patterns and highlight suspicious activity.
 
 Query Evidence: (/evidence/Q1/betterQueryString.png)
+<img width="1917" height="1078" alt="betterQueryString" src="https://github.com/user-attachments/assets/1ef0dad1-dcd6-47ba-90ce-a71932e3f904" />
 
 Answer: bstoll,btun,splunk\_access,web\_admin
 
 Answer Evidence: (/evidence/Q1/Usernme.png)
+<img width="1912" height="1077" alt="Usernme" src="https://github.com/user-attachments/assets/7367040a-3979-431e-9394-b4ef18cf4454" />
+
 
 
 
@@ -110,8 +113,10 @@ Query: index=botsv3 sourcetype="aws:cloudtrail" "userIdentity.sessionContext.att
 The mfaAuthenticated search query can be found as a suggested filter when using SPL to filter under the tag 'userIdentity'. This field allows SOC analysts to alert on AWS activity performed without a multi-factor authentication check - a common indicator of misuse or poor security.
 
 Query Evidence: (/evidence/Q2/searchstring.png)
+<img width="1911" height="1073" alt="searchString" src="https://github.com/user-attachments/assets/37cc38b7-18e7-468b-9441-1fb6fd2afde5" />
 
 MFA false Evidence: (/evidence/Q2/JSONValue.png)
+<img width="1918" height="1072" alt="JSONvalue" src="https://github.com/user-attachments/assets/251ffe71-71c5-4626-aad5-5b1e7a96889f" />
 
 Answer: userIdentity.sessionContext.attributes.mfaAuthenticated
 
@@ -126,6 +131,7 @@ Identifying the web server can help to correlate infrastructure details with mal
 Timestamp: 8/20/18 2:26:25.000 PM
 
 Query and Answer Evidence: (/evidence/Q3/Processor.png)
+<img width="1918" height="1078" alt="Processor" src="https://github.com/user-attachments/assets/df512100-62db-4319-b8b6-8b18c0783a9c" />
 
 Answer: Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
 
@@ -141,9 +147,11 @@ Timestamp: 8/20/18 1:01:46.000 PM
 
 Answer: ab45689d-69cd-41e7-8705-5350402cf7ac
 
-Event ID evidence: (/evidence/Q4/eventide.png)
+Event ID evidence: (/evidence/Q4/eventid.png)
+<img width="1918" height="1078" alt="eventID" src="https://github.com/user-attachments/assets/2f66fe75-fb84-41bc-86b1-978c1cfab4d6" />
 
 Public access enabled evidence: (/evidence/Q4/AllUsersReadWrite.png)
+<img width="1918" height="1078" alt="AllUseresReadWrite" src="https://github.com/user-attachments/assets/554afadf-29e6-40a2-b437-5b5d91f7864a" />
 
 
 
@@ -158,6 +166,7 @@ Timestamp: 8/20/18 1:01:46.000 PM
 Answer: bstoll
 
 Answer Evidence: (/evidence/Q5/BudsUsername.png)
+<img width="1918" height="1078" alt="BudsUsername" src="https://github.com/user-attachments/assets/7a5b1c92-3584-4baa-8e9b-e9fe9da51a65" />
 
 
 
@@ -172,6 +181,7 @@ Timestamp: 8/20/18 1:01:46.000 PM
 Answer: frothlywebcode
 
 Answer Evidence: (/evidence/Q6/BucketName.png)
+<img width="1918" height="1078" alt="BucketName" src="https://github.com/user-attachments/assets/98c0d14d-20c3-4960-a3ed-b4e64136f147" />
 
 
 
@@ -182,6 +192,7 @@ Query: index=botsv3 sourcetype="aws:s3accesslogs" frothlywebcode PUT txt
 Timestamp: 8/20/18 1:02:44.000 PM
 
 Query and Answer Evidence: (/evidence/Q7/txtFile.png)
+<img width="1918" height="1078" alt="txtFile" src="https://github.com/user-attachments/assets/d3abca82-d36c-4292-9993-b13ea816f362" />
 
 Answer: OPEN\_BUCKET\_PLEAE\_FIX.txt
 
@@ -194,12 +205,15 @@ Query 1: index=botsv3 sourcetype="winhostmon" OS="\*"
 Query 2: index=botsv3 host="bstoll-l" sourcetype="WinEventLog:Security"
 
 Query evidence: (evidence/Q8/InitialSearch.png)
+<img width="1908" height="1078" alt="InitialSearch" src="https://github.com/user-attachments/assets/b5efed0f-fdbc-49e4-93e4-8143e1a4ec0c" />
 
 Different OS evidence: (/evidence/Q8/DifferentOS.png)
+<img width="1918" height="1078" alt="DifferentOS" src="https://github.com/user-attachments/assets/9d4e0f42-e5ac-419b-bf39-7773ecc36d3c" />
 
 Answer: BSTOLL-L.froth.ly
 
 Answer evidence: (evidence/Q8/FQDN.png)
+<img width="1918" height="1078" alt="FQDN " src="https://github.com/user-attachments/assets/0c4bb550-f7ed-4dc5-9c47-cb77a837fa29" />
 
 
 
