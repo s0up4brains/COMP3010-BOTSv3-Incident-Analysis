@@ -219,7 +219,7 @@ Answer evidence: (evidence/Q8/FQDN.png)
 
 
 
-Detection in the incident relied on CloudTrail monitoring, GuardDuty threat intelligence and log correlation. Monitoring logs and creating alerts for high-risk API activities, such as 'PutBucketAcl', with MFA status checks helps identify misconfiguration and credential misuse. Searching CloudTrail events allows confirmation of configuration changes, reducing detection times.
+Detection relied on CloudTrail monitoring, GuardDuty threat intelligence and log correlation. Monitoring logs and creating alerts for high-risk API activities, such as 'PutBucketAcl', with MFA status checks helps identify misconfiguration and credential misuse. Searching CloudTrail events allows confirmation of configuration changes, reducing detection times.
 
 
 
@@ -239,39 +239,19 @@ Detection in the incident relied on CloudTrail monitoring, GuardDuty threat inte
 
 
 
-The investigation outlined an incident involving an S3 Bucket that was publicly accessible for over an hour, exposing internal assets. The incident was a result of a misconfiguration by a legitimate IAM user. During the exposure, a .txt file was successfully uploaded to the bucket, and GuardDuty detected a malicious IP address probing an exposed EC2 instance. Evidence of increased attention from external sources as a result of the misconfiguration.
+The investigation outlined a security incident involving an Amazon S3 bucket that was publicly accessible for over an hour, exposing internal assets. The incident was a result of a misconfiguration by a legitimate IAM user. During the exposure, a .txt file was successfully uploaded to the bucket, and AWS GuardDuty detected a malicious IP address probing an exposed EC2 instance. This demonstrates evidence of increased attention from external sources as a result of the misconfiguration. While no evidence of deeper compromise was detected in the scope of this investigation, the incident highlights how configuration errors can increase the risk of attack.
 
 
 
-Findings \& Impact
+The incident demonstrated that Forthlys' preventative measures are insufficient. Appropriate measures have not been implemented to reduce human error. The lack of enforced multi-factor authentication and privilege controls increased the likelihood of accidental exposure.
 
 
 
-Open port SSH port 22 was probed by a known malicious IP originating in Beijing.
+My suggestions are informed by SOC incident handling methodologies of Prevention, Detection, Response and Recovery. The simplest improvement to Frothly's infrastructure is enhancing detection. Creating a dashboard with alerts for high-risk API activity, such as AWS activity that occurs without Multi-Factor Authentication and 'PutBucketAcl' actions. These alerts can lead to earlier detection of potentially malicious activity, reducing response times. Multi-Factor Authentication should be enforced for all existing users, and it should be a requirement that all new users enable MFA.
 
 
 
-Key Lessons
-
-
-
--human error
-
-
-
-\-
-
-
-
-SOC strategy implications
-
-
-
-Improvements to be made to detection and response
-
-
-
-The simplest improvement to Frothly's infrastructure is creating a dashboard with alerts set up for AWS activity that occurs without Multi-Factor Authentication. These alerts can lead to earlier detection of potentially malicious activity, reducing response times. In addition, limiting employee access to a least privilege principle policy would reduce the risk of accidental exposure due to human error and prevent future incidents similar to the S3 bucket exposure.
+The next steps following the incident involve reviewing the contents of the bucket and other potentially compromised or recently changed systems for malicious content. Removing any threats from the system. Once compromised content has been eradicated, systems should be restored and tested so that operations may continue. Preventative measures include limiting employee access to a least privilege principle policy, which would reduce the risk of accidental exposure due to human error and prevent future incidents similar to the S3 bucket exposure. Employees with AWS access privileges should also be retrained on security principles and policies. In addition, employees should know how to respond in the event of an incident. Ensuring staff stay vigilant is the most effective way to mitigate risks and reduce threat impact.
 
 
 
